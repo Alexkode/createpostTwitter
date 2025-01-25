@@ -14,7 +14,12 @@ const PostPreview = ({ text, media, threadPosts = [] }: PostPreviewProps) => {
           <div className="text-sm text-gray-500">@username</div>
         </div>
       </div>
-      <p className="text-gray-800 mb-3">{postText || "Your post preview will appear here"}</p>
+      <p className="text-gray-800 mb-3 whitespace-pre-wrap" style={{ 
+        overflowWrap: 'break-word',
+        wordBreak: 'break-word'
+      }}>
+        {postText || "Your post preview will appear here"}
+      </p>
       {postMedia.length > 0 && (
         <div className="grid grid-cols-2 gap-2">
           {postMedia.map((url, index) => (
