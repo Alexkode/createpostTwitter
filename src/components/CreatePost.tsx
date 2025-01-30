@@ -293,7 +293,7 @@ const CreatePost = () => {
               />
             </div>
           </DialogTrigger>
-          <DialogContent className={`${isMobile ? 'w-[95vw] max-w-[95vw]' : 'sm:max-w-[425px]'}`}>
+          <DialogContent className={`${isMobile ? 'w-[95vw] max-w-[95vw]' : 'sm:max-w-[425px]'} max-h-[90vh]`}>
             <PostPreview 
               text={isThreadMode ? threadPosts[0]?.text : text} 
               media={isThreadMode ? threadPosts[0]?.media : media}

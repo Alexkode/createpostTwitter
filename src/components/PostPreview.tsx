@@ -1,4 +1,5 @@
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface PostPreviewProps {
   text: string;
@@ -40,8 +41,8 @@ const PostPreview = ({ text, media, threadPosts = [], isDialog = false }: PostPr
     </div>
   );
 
-  return (
-    <div className={isMobile ? 'w-full' : ''}>
+  const content = (
+    <>
       {!isDialog && <h2 className="text-sm font-medium text-gray-700 mb-3">Twitter / X Preview</h2>}
       <div className={`border border-gray-200 rounded-lg p-4 ${isDialog ? 'border-0 p-2' : ''}`}>
         {renderPost(text, media)}
@@ -49,6 +50,18 @@ const PostPreview = ({ text, media, threadPosts = [], isDialog = false }: PostPr
           renderPost(post.text, post.media, true)
         ))}
       </div>
+    </>
+  );
+
+  return (
+    <div className={isMobile ? 'w-full' : ''}>
+      {isDialog ? (
+        <ScrollArea className="h-[80vh]">
+          {content}
+        </ScrollArea>
+      ) : (
+        content
+      )}
     </div>
   );
 };
