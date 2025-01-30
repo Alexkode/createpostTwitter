@@ -282,7 +282,7 @@ const CreatePost = () => {
         </div>
       </div>
 
-      <div className={`${isMobile ? 'w-full' : 'w-[350px]'} bg-white rounded-lg shadow-sm border border-gray-200 p-4 ${isMobile ? '' : 'h-fit sticky top-4'}`}>
+      <div className={`${isMobile ? 'w-full' : 'w-[350px] self-start'} bg-white rounded-lg shadow-sm border border-gray-200 p-4 ${isMobile ? '' : 'sticky top-4'}`}>
         <Dialog>
           <DialogTrigger asChild>
             <div className="cursor-pointer">
