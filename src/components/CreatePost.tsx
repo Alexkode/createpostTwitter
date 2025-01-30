@@ -3,6 +3,7 @@ import PostTextArea from "./PostTextArea";
 import PostActions from "./PostActions";
 import MediaUpload from "./MediaUpload";
 import PostPreview from "./PostPreview";
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
