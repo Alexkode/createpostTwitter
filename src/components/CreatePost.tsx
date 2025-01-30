@@ -102,6 +102,13 @@ const CreatePost = () => {
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-xl font-semibold text-gray-800">Create Post</h1>
+            <Button
+              variant="outline"
+              onClick={handleStartThread}
+              className="flex items-center gap-2"
+            >
+              {isThreadMode ? "Add Thread" : "Start Thread"}
+            </Button>
           </div>
           
           {!isThreadMode ? (
