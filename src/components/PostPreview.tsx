@@ -1,3 +1,5 @@
+import { useIsMobile } from "@/hooks/use-mobile";
+
 interface PostPreviewProps {
   text: string;
   media: string[];
@@ -6,6 +8,8 @@ interface PostPreviewProps {
 }
 
 const PostPreview = ({ text, media, threadPosts = [], isDialog = false }: PostPreviewProps) => {
+  const isMobile = useIsMobile();
+
   const renderPost = (postText: string, postMedia: string[], isReply?: boolean) => (
     <div className={`${isReply ? 'mt-4 pl-4 border-l-2 border-gray-200' : ''}`}>
       <div className="flex items-center gap-3 mb-2">
@@ -28,7 +32,7 @@ const PostPreview = ({ text, media, threadPosts = [], isDialog = false }: PostPr
               key={index} 
               src={url} 
               alt="" 
-              className={`rounded-lg w-full object-cover ${isDialog ? 'h-[150px]' : 'h-48'}`}
+              className={`rounded-lg w-full object-cover ${isDialog ? 'h-[150px]' : isMobile ? 'h-32' : 'h-48'}`}
             />
           ))}
         </div>
@@ -37,7 +41,7 @@ const PostPreview = ({ text, media, threadPosts = [], isDialog = false }: PostPr
   );
 
   return (
-    <div>
+    <div className={isMobile ? 'w-full' : ''}>
       {!isDialog && <h2 className="text-sm font-medium text-gray-700 mb-3">Twitter / X Preview</h2>}
       <div className={`border border-gray-200 rounded-lg p-4 ${isDialog ? 'border-0 p-2' : ''}`}>
         {renderPost(text, media)}

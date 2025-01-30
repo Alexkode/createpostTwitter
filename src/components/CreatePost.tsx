@@ -5,18 +5,11 @@ import MediaUpload from "./MediaUpload";
 import PostPreview from "./PostPreview";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { format } from "date-fns";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ThreadPost {
   id: string;
@@ -37,6 +30,7 @@ const twitterAccounts: TwitterAccount[] = [
 ];
 
 const CreatePost = () => {
+  const isMobile = useIsMobile();
   const [text, setText] = useState("");
   const [media, setMedia] = useState<string[]>([]);
   const [isThreadMode, setIsThreadMode] = useState(false);
@@ -114,8 +108,8 @@ const CreatePost = () => {
   };
 
   return (
-    <div className="flex gap-8">
-      <div className="flex-1 bg-white rounded-lg shadow-sm border border-gray-200">
+    <div className={`flex ${isMobile ? 'flex-col' : 'gap-8'}`}>
+      <div className={`flex-1 bg-white rounded-lg shadow-sm border border-gray-200 ${isMobile ? 'mb-4' : ''}`}>
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-xl font-semibold text-gray-800">Create Post</h1>
@@ -288,7 +282,7 @@ const CreatePost = () => {
         </div>
       </div>
 
-      <div className="w-[350px] bg-white rounded-lg shadow-sm border border-gray-200 p-4 h-fit sticky top-4">
+      <div className={`${isMobile ? 'w-full' : 'w-[350px]'} bg-white rounded-lg shadow-sm border border-gray-200 p-4 ${isMobile ? '' : 'h-fit sticky top-4'}`}>
         <Dialog>
           <DialogTrigger asChild>
             <div className="cursor-pointer">
@@ -299,7 +293,7 @@ const CreatePost = () => {
               />
             </div>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
+          <DialogContent className={`${isMobile ? 'w-[95vw] max-w-[95vw]' : 'sm:max-w-[425px]'}`}>
             <PostPreview 
               text={isThreadMode ? threadPosts[0]?.text : text} 
               media={isThreadMode ? threadPosts[0]?.media : media}
