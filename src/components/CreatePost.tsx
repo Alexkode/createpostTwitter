@@ -125,10 +125,10 @@ const CreatePost = () => {
         />
       </div>
 
-      <div className={`${isMobile ? 'w-full' : 'w-[350px]'} bg-white rounded-lg shadow-sm border border-gray-200 ${isMobile ? '' : 'sticky top-4 h-fit max-h-[calc(100vh-2rem)] overflow-hidden'}`}>
+      <div className={`${isMobile ? 'w-full' : 'w-[350px] self-start'} bg-white rounded-lg shadow-sm border border-gray-200 p-4 ${isMobile ? '' : 'sticky top-4'}`}>
         <Dialog>
           <DialogTrigger asChild>
-            <div className="cursor-pointer p-4">
+            <div className="cursor-pointer">
               <PostPreview 
                 text={isThreadMode ? threadPosts[0]?.text : text} 
                 media={isThreadMode ? threadPosts[0]?.media : media}
