@@ -3,21 +3,13 @@ import PostTextArea from "./PostTextArea";
 import PostActions from "./PostActions";
 import MediaUpload from "./MediaUpload";
 import PostPreview from "./PostPreview";
-import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Plus, X } from "lucide-react";
+import { X } from "lucide-react";
 import { format } from "date-fns";
 import { Switch } from "@/components/ui/switch";
 
@@ -111,21 +103,6 @@ const CreatePost = () => {
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-xl font-semibold text-gray-800">Create Post</h1>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={handleStartThread}
-              className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-            >
-              {!isThreadMode ? (
-                <>
-                  <Plus className="h-4 w-4 mr-1" />
-                  Start Thread
-                </>
-              ) : (
-                <Plus className="h-4 w-4" />
-              )}
-            </Button>
           </div>
           
           {!isThreadMode ? (
