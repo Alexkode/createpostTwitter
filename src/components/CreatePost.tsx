@@ -10,13 +10,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { X } from "lucide-react";
+import { ChevronDown, ChevronUp, X } from "lucide-react";
 import { format } from "date-fns";
 
 interface ThreadPost {
   id: string;
   text: string;
   media: string[];
+  isCollapsed?: boolean;
 }
 
 interface TwitterAccount {
@@ -32,12 +33,7 @@ const CreatePost = () => {
   const [date, setDate] = useState<Date>();
   const [time, setTime] = useState("12:00");
   const [selectedTwitterAccounts, setSelectedTwitterAccounts] = useState<string[]>([]);
-
-  // Mock Twitter accounts - in a real app, these would come from your backend
-  const twitterAccounts: TwitterAccount[] = [
-    { id: "1", handle: "@optimentalex" },
-    { id: "2", handle: "@another_account" },
-  ];
+  const [expandedPostId, setExpandedPostId] = useState<string | null>("main");
 
   const handleStartThread = () => {
     if (!isThreadMode) {
@@ -47,11 +43,13 @@ const CreatePost = () => {
           id: "main",
           text: text,
           media: media,
+          isCollapsed: false
         },
         {
           id: Date.now().toString(),
           text: "",
           media: [],
+          isCollapsed: false
         },
       ]);
     } else {
@@ -61,9 +59,14 @@ const CreatePost = () => {
           id: Date.now().toString(),
           text: "",
           media: [],
+          isCollapsed: false
         },
       ]);
     }
+  };
+
+  const togglePostCollapse = (id: string) => {
+    setExpandedPostId(expandedPostId === id ? null : id);
   };
 
   const removeThreadPost = (id: string) => {
@@ -91,7 +94,6 @@ const CreatePost = () => {
   };
 
   const handleSchedule = () => {
-    // Here you would implement the actual scheduling logic
     console.log("Scheduling post for:", date, time);
     console.log("Selected Twitter accounts:", selectedTwitterAccounts);
   };
@@ -102,26 +104,30 @@ const CreatePost = () => {
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-xl font-semibold text-gray-800">Create Post</h1>
-            <Button
-              variant="outline"
-              onClick={handleStartThread}
-              className="flex items-center gap-2"
-            >
-              {isThreadMode ? "Add Thread" : "Start Thread"}
-            </Button>
           </div>
           
           {!isThreadMode ? (
             <>
               <PostTextArea value={text} onChange={setText} />
-              <MediaUpload onUpload={(url) => setMedia([...media, url])} />
-              {media.length > 0 && (
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                  {media.map((url, index) => (
-                    <img key={index} src={url} alt="" className="rounded-lg w-full h-48 object-cover" />
-                  ))}
+              <div className="flex items-start gap-4">
+                <div className="flex-1">
+                  <MediaUpload onUpload={(url) => setMedia([...media, url])} />
+                  {media.length > 0 && (
+                    <div className="mt-4 grid grid-cols-2 gap-2">
+                      {media.map((url, index) => (
+                        <img key={index} src={url} alt="" className="rounded-lg w-full h-48 object-cover" />
+                      ))}
+                    </div>
+                  )}
                 </div>
-              )}
+                <Button
+                  variant="outline"
+                  onClick={handleStartThread}
+                  className="mt-2"
+                >
+                  Start Thread
+                </Button>
+              </div>
             </>
           ) : (
             <div className="space-y-4">
@@ -131,34 +137,54 @@ const CreatePost = () => {
                     <div className="absolute -left-4 top-0 bottom-0 w-0.5 bg-gray-200" />
                   )}
                   <div className="pl-8 relative">
-                    {index > 0 && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute -right-2 -top-2 text-gray-400 hover:text-gray-600"
-                        onClick={() => removeThreadPost(post.id)}
+                    <div className="flex justify-between items-center mb-2">
+                      <button 
+                        onClick={() => togglePostCollapse(post.id)}
+                        className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
                       >
-                        <X className="h-4 w-4" />
-                      </Button>
+                        {expandedPostId === post.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        <span className="text-sm">Tweet {index + 1}</span>
+                      </button>
+                      {index > 0 && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-gray-400 hover:text-gray-600"
+                          onClick={() => removeThreadPost(post.id)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                    {expandedPostId === post.id && (
+                      <>
+                        <PostTextArea
+                          value={post.text}
+                          onChange={(newText) => updateThreadPost(post.id, newText)}
+                        />
+                        <MediaUpload
+                          onUpload={(url) =>
+                            setThreadPosts(
+                              threadPosts.map(p =>
+                                p.id === post.id
+                                  ? { ...p, media: [...p.media, url] }
+                                  : p
+                              )
+                            )
+                          }
+                        />
+                      </>
                     )}
-                    <PostTextArea
-                      value={post.text}
-                      onChange={(newText) => updateThreadPost(post.id, newText)}
-                    />
-                    <MediaUpload
-                      onUpload={(url) =>
-                        setThreadPosts(
-                          threadPosts.map(p =>
-                            p.id === post.id
-                              ? { ...p, media: [...p.media, url] }
-                              : p
-                          )
-                        )
-                      }
-                    />
                   </div>
                 </div>
               ))}
+              <Button
+                variant="outline"
+                onClick={handleStartThread}
+                className="ml-8"
+              >
+                Add Tweet
+              </Button>
             </div>
           )}
           <PostActions />
