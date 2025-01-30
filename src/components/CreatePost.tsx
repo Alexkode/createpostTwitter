@@ -6,17 +6,30 @@ import PostPreview from "./PostPreview";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Plus, X } from "lucide-react";
 import { format } from "date-fns";
+import { Switch } from "@/components/ui/switch";
 
 interface ThreadPost {
   id: string;
   text: string;
   media: string[];
+}
+
+interface TwitterAccount {
+  id: string;
+  handle: string;
 }
 
 const CreatePost = () => {
@@ -25,6 +38,15 @@ const CreatePost = () => {
   const [isThreadMode, setIsThreadMode] = useState(false);
   const [threadPosts, setThreadPosts] = useState<ThreadPost[]>([]);
   const [date, setDate] = useState<Date>();
+  const [time, setTime] = useState("12:00");
+  const [useTimezone, setUseTimezone] = useState(true);
+  const [selectedTwitterAccounts, setSelectedTwitterAccounts] = useState<string[]>([]);
+
+  // Mock Twitter accounts - in a real app, these would come from your backend
+  const twitterAccounts: TwitterAccount[] = [
+    { id: "1", handle: "@optimentalex" },
+    { id: "2", handle: "@another_account" },
+  ];
 
   const handleStartThread = () => {
     if (!isThreadMode) {
@@ -67,6 +89,20 @@ const CreatePost = () => {
         post.id === id ? { ...post, text: newText } : post
       )
     );
+  };
+
+  const handleCancel = () => {
+    setText("");
+    setMedia([]);
+    setDate(undefined);
+    setTime("12:00");
+    setSelectedTwitterAccounts([]);
+  };
+
+  const handleSchedule = () => {
+    // Here you would implement the actual scheduling logic
+    console.log("Scheduling post for:", date, time);
+    console.log("Selected Twitter accounts:", selectedTwitterAccounts);
   };
 
   return (
@@ -145,28 +181,73 @@ const CreatePost = () => {
           <PostActions />
         </div>
         
-        <div className="border-t border-gray-200 p-4 flex items-center justify-end">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500">
-              {isThreadMode 
-                ? threadPosts[threadPosts.length - 1]?.text.length 
-                : text.length}/280
-            </span>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button variant="outline">
-                  {date ? format(date, "PPP") : "Schedule Post"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="end">
-                <Calendar
-                  mode="single"
-                  selected={date}
-                  onSelect={setDate}
-                  initialFocus
+        <div className="border-t border-gray-200 p-4 space-y-4">
+          <div className="flex flex-col gap-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Twitter Accounts</label>
+              {twitterAccounts.map((account) => (
+                <div key={account.id} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id={account.id}
+                    checked={selectedTwitterAccounts.includes(account.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedTwitterAccounts([...selectedTwitterAccounts, account.id]);
+                      } else {
+                        setSelectedTwitterAccounts(selectedTwitterAccounts.filter(id => id !== account.id));
+                      }
+                    }}
+                    className="rounded border-gray-300"
+                  />
+                  <label htmlFor={account.id} className="text-sm text-gray-600">
+                    {account.handle}
+                  </label>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex items-center gap-4">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" className="w-[240px] justify-start text-left font-normal">
+                    {date ? format(date, "PPP") : "Pick a date"}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+
+              <input
+                type="time"
+                value={time}
+                onChange={(e) => setTime(e.target.value)}
+                className="px-3 py-2 border rounded-md"
+              />
+
+              <div className="flex items-center gap-2">
+                <Switch
+                  checked={useTimezone}
+                  onCheckedChange={setUseTimezone}
                 />
-              </PopoverContent>
-            </Popover>
+                <span className="text-sm text-gray-500">Use my timezone</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" onClick={handleCancel}>
+              Cancel
+            </Button>
+            <Button onClick={handleSchedule}>
+              Schedule Post
+            </Button>
           </div>
         </div>
       </div>
