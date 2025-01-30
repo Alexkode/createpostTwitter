@@ -54,7 +54,7 @@ const PostPreview = ({ text, media, threadPosts = [], isDialog = false }: PostPr
   );
 
   return (
-    <div className={`${isMobile ? 'w-full' : ''} max-h-[calc(100vh-8rem)]`}>
+    <div className={`${isMobile ? 'w-full' : ''} h-[calc(100vh-8rem)]`}>
       {isDialog ? (
         <ScrollArea className="h-[80vh]">
           {content}
