@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/popover";
 import { X } from "lucide-react";
 import { format } from "date-fns";
-import { Switch } from "@/components/ui/switch";
 
 interface ThreadPost {
   id: string;
@@ -32,7 +31,6 @@ const CreatePost = () => {
   const [threadPosts, setThreadPosts] = useState<ThreadPost[]>([]);
   const [date, setDate] = useState<Date>();
   const [time, setTime] = useState("12:00");
-  const [useTimezone, setUseTimezone] = useState(true);
   const [selectedTwitterAccounts, setSelectedTwitterAccounts] = useState<string[]>([]);
 
   // Mock Twitter accounts - in a real app, these would come from your backend
@@ -208,14 +206,6 @@ const CreatePost = () => {
                 onChange={(e) => setTime(e.target.value)}
                 className="px-3 py-2 border rounded-md"
               />
-
-              <div className="flex items-center gap-2">
-                <Switch
-                  checked={useTimezone}
-                  onCheckedChange={setUseTimezone}
-                />
-                <span className="text-sm text-gray-500">Use my timezone</span>
-              </div>
             </div>
           </div>
 
