@@ -44,6 +44,7 @@ const CreatePost = () => {
   const handleStartThread = () => {
     if (!isThreadMode) {
       setIsThreadMode(true);
+      const newPostId = Date.now().toString();
       setThreadPosts([
         {
           id: "main",
@@ -52,22 +53,25 @@ const CreatePost = () => {
           isCollapsed: false
         },
         {
-          id: Date.now().toString(),
+          id: newPostId,
           text: "",
           media: [],
           isCollapsed: false
         },
       ]);
+      setExpandedPostId(newPostId);
     } else {
+      const newPostId = Date.now().toString();
       setThreadPosts([
         ...threadPosts,
         {
-          id: Date.now().toString(),
+          id: newPostId,
           text: "",
           media: [],
           isCollapsed: false
         },
       ]);
+      setExpandedPostId(newPostId);
     }
   };
 
@@ -140,23 +144,29 @@ const CreatePost = () => {
               {threadPosts.map((post, index) => (
                 <div key={post.id} className="relative">
                   {index > 0 && (
-                    <div className="absolute -left-4 top-0 bottom-0 w-0.5 bg-gray-200" />
+                    <div 
+                      className="absolute -left-4 top-0 bottom-0 w-1 bg-blue-200 hover:bg-blue-300 cursor-pointer transition-colors"
+                      onClick={() => togglePostCollapse(post.id)}
+                    />
                   )}
                   <div className="pl-8 relative">
-                    <div className="flex justify-between items-center mb-2">
-                      <button 
-                        onClick={() => togglePostCollapse(post.id)}
-                        className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
-                      >
+                    <div 
+                      className="flex justify-between items-center mb-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
+                      onClick={() => togglePostCollapse(post.id)}
+                    >
+                      <div className="flex items-center gap-2 text-gray-600">
                         {expandedPostId === post.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                        <span className="text-sm">Tweet {index + 1}</span>
-                      </button>
+                        <span className="text-sm font-medium">Tweet {index + 1}</span>
+                      </div>
                       {index > 0 && (
                         <Button
                           variant="ghost"
                           size="icon"
                           className="text-gray-400 hover:text-gray-600"
-                          onClick={() => removeThreadPost(post.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            removeThreadPost(post.id);
+                          }}
                         >
                           <X className="h-4 w-4" />
                         </Button>
@@ -196,7 +206,7 @@ const CreatePost = () => {
           <PostActions />
         </div>
         
-        <div className="border-t border-gray-200 p-4 space-y-4">
+        <div className="border-t border-gray-200 p-4">
           <div className="flex flex-col gap-4">
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Twitter Accounts</label>
@@ -248,7 +258,7 @@ const CreatePost = () => {
             </div>
           </div>
 
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2 mt-4">
             <Button variant="ghost" onClick={handleCancel}>
               Cancel
             </Button>
