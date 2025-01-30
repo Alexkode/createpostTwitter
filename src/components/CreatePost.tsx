@@ -3,12 +3,10 @@ import PostTextArea from "./PostTextArea";
 import PostActions from "./PostActions";
 import MediaUpload from "./MediaUpload";
 import PostPreview from "./PostPreview";
+import ThreadManager from "./ThreadManager";
+import ScheduleOptions from "./ScheduleOptions";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { ChevronDown, ChevronUp, X } from "lucide-react";
-import { format } from "date-fns";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ThreadPost {
@@ -18,13 +16,8 @@ interface ThreadPost {
   isCollapsed?: boolean;
 }
 
-interface TwitterAccount {
-  id: string;
-  handle: string;
-}
-
 // Mock data for Twitter accounts
-const twitterAccounts: TwitterAccount[] = [
+const twitterAccounts = [
   { id: "1", handle: "@primary_account" },
   { id: "2", handle: "@secondary_account" },
 ];
@@ -39,60 +32,6 @@ const CreatePost = () => {
   const [time, setTime] = useState("12:00");
   const [selectedTwitterAccounts, setSelectedTwitterAccounts] = useState<string[]>([]);
   const [expandedPostId, setExpandedPostId] = useState<string | null>("main");
-
-  const handleStartThread = () => {
-    if (!isThreadMode) {
-      setIsThreadMode(true);
-      const newPostId = Date.now().toString();
-      setThreadPosts([
-        {
-          id: "main",
-          text: text,
-          media: media,
-          isCollapsed: false
-        },
-        {
-          id: newPostId,
-          text: "",
-          media: [],
-          isCollapsed: false
-        },
-      ]);
-      setExpandedPostId(newPostId);
-    } else {
-      const newPostId = Date.now().toString();
-      setThreadPosts([
-        ...threadPosts,
-        {
-          id: newPostId,
-          text: "",
-          media: [],
-          isCollapsed: false
-        },
-      ]);
-      setExpandedPostId(newPostId);
-    }
-  };
-
-  const togglePostCollapse = (id: string) => {
-    setExpandedPostId(expandedPostId === id ? null : id);
-  };
-
-  const removeThreadPost = (id: string) => {
-    setThreadPosts(threadPosts.filter(post => post.id !== id));
-    if (threadPosts.length <= 2) {
-      setIsThreadMode(false);
-      setThreadPosts([]);
-    }
-  };
-
-  const updateThreadPost = (id: string, newText: string) => {
-    setThreadPosts(
-      threadPosts.map(post =>
-        post.id === id ? { ...post, text: newText } : post
-      )
-    );
-  };
 
   const handleCancel = () => {
     setText("");
@@ -131,7 +70,27 @@ const CreatePost = () => {
                 </div>
                 <Button
                   variant="outline"
-                  onClick={handleStartThread}
+                  onClick={() => {
+                    if (!isThreadMode) {
+                      setIsThreadMode(true);
+                      const newPostId = Date.now().toString();
+                      setThreadPosts([
+                        {
+                          id: "main",
+                          text: text,
+                          media: media,
+                          isCollapsed: false
+                        },
+                        {
+                          id: newPostId,
+                          text: "",
+                          media: [],
+                          isCollapsed: false
+                        },
+                      ]);
+                      setExpandedPostId(newPostId);
+                    }
+                  }}
                   className="mt-2"
                 >
                   Start Thread
@@ -139,147 +98,31 @@ const CreatePost = () => {
               </div>
             </>
           ) : (
-            <div className="space-y-4">
-              {threadPosts.map((post, index) => (
-                <div key={post.id} className="relative">
-                  {index > 0 && (
-                    <div 
-                      className="absolute -left-4 top-0 bottom-0 w-1 bg-blue-200 hover:bg-blue-300 cursor-pointer transition-colors"
-                      onClick={() => togglePostCollapse(post.id)}
-                    />
-                  )}
-                  <div className="pl-8 relative">
-                    <div 
-                      className="flex justify-between items-center mb-2 p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
-                      onClick={() => togglePostCollapse(post.id)}
-                    >
-                      <div className="flex items-center gap-2 text-gray-600">
-                        {expandedPostId === post.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                        <span className="text-sm font-medium">Tweet {index + 1}</span>
-                      </div>
-                      {index > 0 && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-gray-400 hover:text-gray-600"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeThreadPost(post.id);
-                          }}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      )}
-                    </div>
-                    {expandedPostId === post.id && (
-                      <>
-                        <PostTextArea
-                          value={post.text}
-                          onChange={(newText) => updateThreadPost(post.id, newText)}
-                        />
-                        <div className="space-y-4">
-                          <MediaUpload
-                            onUpload={(url) =>
-                              setThreadPosts(
-                                threadPosts.map(p =>
-                                  p.id === post.id
-                                    ? { ...p, media: [...p.media, url] }
-                                    : p
-                                )
-                              )
-                            }
-                          />
-                          {post.media.length > 0 && (
-                            <div className="grid grid-cols-2 gap-2">
-                              {post.media.map((url, mediaIndex) => (
-                                <img 
-                                  key={mediaIndex} 
-                                  src={url} 
-                                  alt="" 
-                                  className="rounded-lg w-full h-48 object-cover"
-                                />
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              ))}
-              <Button
-                variant="outline"
-                onClick={handleStartThread}
-                className="ml-8"
-              >
-                Add Tweet
-              </Button>
-            </div>
+            <ThreadManager
+              threadPosts={threadPosts}
+              setThreadPosts={setThreadPosts}
+              expandedPostId={expandedPostId}
+              setExpandedPostId={setExpandedPostId}
+              isThreadMode={isThreadMode}
+              setIsThreadMode={setIsThreadMode}
+              text={text}
+              media={media}
+            />
           )}
           <PostActions />
         </div>
         
-        <div className="border-t border-gray-200 p-4">
-          <div className="flex flex-col gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Twitter Accounts</label>
-              {twitterAccounts.map((account) => (
-                <div key={account.id} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id={account.id}
-                    checked={selectedTwitterAccounts.includes(account.id)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSelectedTwitterAccounts([...selectedTwitterAccounts, account.id]);
-                      } else {
-                        setSelectedTwitterAccounts(selectedTwitterAccounts.filter(id => id !== account.id));
-                      }
-                    }}
-                    className="rounded border-gray-300"
-                  />
-                  <label htmlFor={account.id} className="text-sm text-gray-600">
-                    {account.handle}
-                  </label>
-                </div>
-              ))}
-            </div>
-
-            <div className="flex items-center gap-4">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="outline" className="w-[240px] justify-start text-left font-normal">
-                    {date ? format(date, "PPP") : "Pick a date"}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-
-              <input
-                type="time"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-                className="px-3 py-2 border rounded-md"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-2 mt-4">
-            <Button variant="ghost" onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button onClick={handleSchedule}>
-              Schedule Post
-            </Button>
-          </div>
-        </div>
+        <ScheduleOptions
+          twitterAccounts={twitterAccounts}
+          selectedTwitterAccounts={selectedTwitterAccounts}
+          setSelectedTwitterAccounts={setSelectedTwitterAccounts}
+          date={date}
+          setDate={setDate}
+          time={time}
+          setTime={setTime}
+          onCancel={handleCancel}
+          onSchedule={handleSchedule}
+        />
       </div>
 
       <div className={`${isMobile ? 'w-full' : 'w-[350px] self-start'} bg-white rounded-lg shadow-sm border border-gray-200 p-4 ${isMobile ? '' : 'sticky top-4'}`}>
