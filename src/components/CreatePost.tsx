@@ -3,15 +3,15 @@ import PostTextArea from "./PostTextArea";
 import PostActions from "./PostActions";
 import MediaUpload from "./MediaUpload";
 import PostPreview from "./PostPreview";
-import TagInput from "./TagInput";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown, Plus, X } from "lucide-react";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Plus, X } from "lucide-react";
+import { format } from "date-fns";
 
 interface ThreadPost {
   id: string;
@@ -22,10 +22,9 @@ interface ThreadPost {
 const CreatePost = () => {
   const [text, setText] = useState("");
   const [media, setMedia] = useState<string[]>([]);
-  const [tags, setTags] = useState<string[]>([]);
   const [isThreadMode, setIsThreadMode] = useState(false);
   const [threadPosts, setThreadPosts] = useState<ThreadPost[]>([]);
-  const [showTagInput, setShowTagInput] = useState(false);
+  const [date, setDate] = useState<Date>();
 
   const handleStartThread = () => {
     if (!isThreadMode) {
@@ -76,34 +75,21 @@ const CreatePost = () => {
         <div className="p-4">
           <div className="flex justify-between items-center mb-4">
             <h1 className="text-xl font-semibold text-gray-800">Create Post</h1>
-            <div className="flex items-center gap-2">
-              <DropdownMenu open={showTagInput} onOpenChange={setShowTagInput}>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    Add Tags
-                    <ChevronDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-[300px] p-4">
-                  <TagInput onTagsChange={setTags} />
-                </DropdownMenuContent>
-              </DropdownMenu>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={handleStartThread}
-                className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-              >
-                {!isThreadMode ? (
-                  <>
-                    <Plus className="h-4 w-4 mr-1" />
-                    Start Thread
-                  </>
-                ) : (
-                  <Plus className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={handleStartThread}
+              className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+            >
+              {!isThreadMode ? (
+                <>
+                  <Plus className="h-4 w-4 mr-1" />
+                  Start Thread
+                </>
+              ) : (
+                <Plus className="h-4 w-4" />
+              )}
+            </Button>
           </div>
           
           {!isThreadMode ? (
@@ -159,38 +145,28 @@ const CreatePost = () => {
           <PostActions />
         </div>
         
-        <div className="border-t border-gray-200 p-4 flex items-center justify-between">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                Save as Draft
-                <ChevronDown className="ml-2 h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem>Schedule Draft</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
+        <div className="border-t border-gray-200 p-4 flex items-center justify-end">
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500">
               {isThreadMode 
                 ? threadPosts[threadPosts.length - 1]?.text.length 
                 : text.length}/280
             </span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button>
-                  Add to Queue
-                  <ChevronDown className="ml-2 h-4 w-4" />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline">
+                  {date ? format(date, "PPP") : "Schedule Post"}
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>Share Now</DropdownMenuItem>
-                <DropdownMenuItem>Share Next</DropdownMenuItem>
-                <DropdownMenuItem>Schedule Post</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
       </div>
