@@ -25,6 +25,12 @@ interface TwitterAccount {
   handle: string;
 }
 
+// Mock data for Twitter accounts
+const twitterAccounts: TwitterAccount[] = [
+  { id: "1", handle: "@primary_account" },
+  { id: "2", handle: "@secondary_account" },
+];
+
 const CreatePost = () => {
   const [text, setText] = useState("");
   const [media, setMedia] = useState<string[]>([]);
