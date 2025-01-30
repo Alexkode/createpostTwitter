@@ -6,6 +6,11 @@ import PostPreview from "./PostPreview";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -178,17 +183,31 @@ const CreatePost = () => {
                           value={post.text}
                           onChange={(newText) => updateThreadPost(post.id, newText)}
                         />
-                        <MediaUpload
-                          onUpload={(url) =>
-                            setThreadPosts(
-                              threadPosts.map(p =>
-                                p.id === post.id
-                                  ? { ...p, media: [...p.media, url] }
-                                  : p
+                        <div className="space-y-4">
+                          <MediaUpload
+                            onUpload={(url) =>
+                              setThreadPosts(
+                                threadPosts.map(p =>
+                                  p.id === post.id
+                                    ? { ...p, media: [...p.media, url] }
+                                    : p
+                                )
                               )
-                            )
-                          }
-                        />
+                            }
+                          />
+                          {post.media.length > 0 && (
+                            <div className="grid grid-cols-2 gap-2">
+                              {post.media.map((url, mediaIndex) => (
+                                <img 
+                                  key={mediaIndex} 
+                                  src={url} 
+                                  alt="" 
+                                  className="rounded-lg w-full h-48 object-cover"
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </>
                     )}
                   </div>
@@ -270,11 +289,25 @@ const CreatePost = () => {
       </div>
 
       <div className="w-[350px] bg-white rounded-lg shadow-sm border border-gray-200 p-4 h-fit sticky top-4">
-        <PostPreview 
-          text={isThreadMode ? threadPosts[0]?.text : text} 
-          media={isThreadMode ? threadPosts[0]?.media : media}
-          threadPosts={isThreadMode ? threadPosts.slice(1) : []}
-        />
+        <Dialog>
+          <DialogTrigger asChild>
+            <div className="cursor-pointer">
+              <PostPreview 
+                text={isThreadMode ? threadPosts[0]?.text : text} 
+                media={isThreadMode ? threadPosts[0]?.media : media}
+                threadPosts={isThreadMode ? threadPosts.slice(1) : []}
+              />
+            </div>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <PostPreview 
+              text={isThreadMode ? threadPosts[0]?.text : text} 
+              media={isThreadMode ? threadPosts[0]?.media : media}
+              threadPosts={isThreadMode ? threadPosts.slice(1) : []}
+              isDialog
+            />
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

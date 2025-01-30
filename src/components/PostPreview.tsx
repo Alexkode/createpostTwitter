@@ -2,9 +2,10 @@ interface PostPreviewProps {
   text: string;
   media: string[];
   threadPosts?: Array<{ text: string; media: string[] }>;
+  isDialog?: boolean;
 }
 
-const PostPreview = ({ text, media, threadPosts = [] }: PostPreviewProps) => {
+const PostPreview = ({ text, media, threadPosts = [], isDialog = false }: PostPreviewProps) => {
   const renderPost = (postText: string, postMedia: string[], isReply?: boolean) => (
     <div className={`${isReply ? 'mt-4 pl-4 border-l-2 border-gray-200' : ''}`}>
       <div className="flex items-center gap-3 mb-2">
@@ -21,9 +22,14 @@ const PostPreview = ({ text, media, threadPosts = [] }: PostPreviewProps) => {
         {postText || "Your post preview will appear here"}
       </p>
       {postMedia.length > 0 && (
-        <div className="grid grid-cols-2 gap-2">
+        <div className={`grid grid-cols-2 gap-2 ${isDialog ? 'max-h-[300px]' : ''}`}>
           {postMedia.map((url, index) => (
-            <img key={index} src={url} alt="" className="rounded-lg w-full h-48 object-cover" />
+            <img 
+              key={index} 
+              src={url} 
+              alt="" 
+              className={`rounded-lg w-full object-cover ${isDialog ? 'h-[150px]' : 'h-48'}`}
+            />
           ))}
         </div>
       )}
@@ -32,8 +38,8 @@ const PostPreview = ({ text, media, threadPosts = [] }: PostPreviewProps) => {
 
   return (
     <div>
-      <h2 className="text-sm font-medium text-gray-700 mb-3">Twitter / X Preview</h2>
-      <div className="border border-gray-200 rounded-lg p-4">
+      {!isDialog && <h2 className="text-sm font-medium text-gray-700 mb-3">Twitter / X Preview</h2>}
+      <div className={`border border-gray-200 rounded-lg p-4 ${isDialog ? 'border-0 p-2' : ''}`}>
         {renderPost(text, media)}
         {threadPosts.map((post, index) => (
           renderPost(post.text, post.media, true)
