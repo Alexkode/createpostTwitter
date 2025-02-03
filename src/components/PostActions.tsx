@@ -44,6 +44,7 @@ const PostActions = () => {
     setHour("12");
     setMinute("00");
     setPeriod("AM");
+    setShowScheduler(false);
   };
 
   const hours = Array.from({ length: 12 }, (_, i) => (i + 1).toString().padStart(2, '0'));
@@ -58,33 +59,37 @@ const PostActions = () => {
 
     return (
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg z-50">
-        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <Button 
-            variant="outline" 
-            onClick={() => console.log("Saved as draft")} 
-            className="w-full sm:w-auto"
-          >
-            {isMobile ? <Save className="h-4 w-4" /> : "Save as draft"}
-          </Button>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                className="flex items-center gap-2" 
+                onClick={() => setShowScheduler(true)}
+              >
+                {format(scheduledTime, isMobile ? "h:mm a" : "EEE, MMMM d 'at' h:mm a")}
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={resetSchedule}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+          <div className="flex gap-4">
             <Button 
               variant="outline" 
-              className="flex items-center gap-2 w-full sm:w-auto" 
-              onClick={() => setShowScheduler(true)}
+              onClick={() => console.log("Saved as draft")} 
+              className="flex-1"
             >
-              {format(scheduledTime, isMobile ? "h:mm a" : "EEE, MMMM d 'at' h:mm a")}
+              {isMobile ? <Save className="h-4 w-4" /> : "Save as draft"}
             </Button>
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={resetSchedule}
-            >
-              <Trash2 className="h-4 w-4" />
+            <Button onClick={handleSchedule} className="flex-1">
+              {isMobile ? <Send className="h-4 w-4" /> : "Schedule"}
             </Button>
           </div>
-          <Button onClick={handleSchedule} className="w-full sm:w-auto">
-            {isMobile ? <Send className="h-4 w-4" /> : "Schedule"}
-          </Button>
         </div>
       </div>
     );
