@@ -55,106 +55,110 @@ const PostActions = () => {
     scheduledTime.setHours(hours, parseInt(minute));
 
     return (
-      <div className="flex items-center justify-between mt-4 border-t pt-4">
-        <Button variant="outline" onClick={() => console.log("Saved as draft")}>
-          Save as draft
-        </Button>
-        <div className="flex items-center gap-2">
-          <Button 
-            variant="outline" 
-            className="flex items-center gap-2" 
-            onClick={() => setShowScheduler(true)}
-          >
-            {format(scheduledTime, "EEE, MMMM d 'at' h:mm a")}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4">
+        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <Button variant="outline" onClick={() => console.log("Saved as draft")} className="w-full sm:w-auto">
+            Save as draft
           </Button>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={resetSchedule}
-          >
-            <Trash2 className="h-4 w-4" />
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2 w-full sm:w-auto" 
+              onClick={() => setShowScheduler(true)}
+            >
+              {format(scheduledTime, "EEE, MMMM d 'at' h:mm a")}
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={resetSchedule}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+          <Button onClick={handleSchedule} className="w-full sm:w-auto">
+            Schedule
           </Button>
         </div>
-        <Button onClick={handleSchedule}>
-          Schedule
-        </Button>
       </div>
     );
   }
 
   return (
-    <div className="flex justify-end gap-2 mt-4 border-t pt-4">
-      <Button variant="outline" onClick={() => console.log("Saved as draft")}>
-        Save as draft
-      </Button>
-      <Button variant="outline" onClick={() => setShowScheduler(true)}>
-        Schedule for later
-      </Button>
-      <Button onClick={() => console.log("Posted now")}>
-        Post now
-      </Button>
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4">
+      <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-end gap-4">
+        <Button variant="outline" onClick={() => console.log("Saved as draft")} className="w-full sm:w-auto">
+          Save as draft
+        </Button>
+        <Button variant="outline" onClick={() => setShowScheduler(true)} className="w-full sm:w-auto">
+          Schedule for later
+        </Button>
+        <Button onClick={() => console.log("Posted now")} className="w-full sm:w-auto">
+          Post now
+        </Button>
 
-      <Dialog open={showScheduler} onOpenChange={setShowScheduler}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Schedule Post</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              className="rounded-md border"
-            />
-            <div className="flex gap-2">
-              <Select value={hour} onValueChange={setHour}>
-                <SelectTrigger className="w-[80px]">
-                  <SelectValue placeholder="Hour" />
-                </SelectTrigger>
-                <SelectContent>
-                  {hours.map((h) => (
-                    <SelectItem key={h} value={h}>
-                      {h}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        <Dialog open={showScheduler} onOpenChange={setShowScheduler}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Schedule Post</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                className="rounded-md border"
+              />
+              <div className="flex gap-2">
+                <Select value={hour} onValueChange={setHour}>
+                  <SelectTrigger className="w-[80px]">
+                    <SelectValue placeholder="Hour" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {hours.map((h) => (
+                      <SelectItem key={h} value={h}>
+                        {h}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              <Select value={minute} onValueChange={setMinute}>
-                <SelectTrigger className="w-[80px]">
-                  <SelectValue placeholder="Min" />
-                </SelectTrigger>
-                <SelectContent>
-                  {minutes.map((m) => (
-                    <SelectItem key={m} value={m}>
-                      {m}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                <Select value={minute} onValueChange={setMinute}>
+                  <SelectTrigger className="w-[80px]">
+                    <SelectValue placeholder="Min" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {minutes.map((m) => (
+                      <SelectItem key={m} value={m}>
+                        {m}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
-              <Select value={period} onValueChange={setPeriod}>
-                <SelectTrigger className="w-[80px]">
-                  <SelectValue placeholder="AM/PM" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="AM">AM</SelectItem>
-                  <SelectItem value="PM">PM</SelectItem>
-                </SelectContent>
-              </Select>
+                <Select value={period} onValueChange={setPeriod}>
+                  <SelectTrigger className="w-[80px]">
+                    <SelectValue placeholder="AM/PM" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="AM">AM</SelectItem>
+                    <SelectItem value="PM">PM</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setShowScheduler(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSchedule} disabled={!date}>
+                  Schedule
+                </Button>
+              </div>
             </div>
-
-            <div className="flex justify-end gap-2">
-              <Button variant="outline" onClick={() => setShowScheduler(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleSchedule} disabled={!date}>
-                Schedule
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 };
