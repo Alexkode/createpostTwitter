@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { format } from "date-fns";
-import { Save, Clock, Send, Trash2 } from "lucide-react";
+import { Save, Clock, Send, Trash2, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 const PostActions = () => {
@@ -59,7 +59,15 @@ const PostActions = () => {
 
     return (
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg z-50">
-        <div className="max-w-[1200px] mx-auto">
+        <div className="max-w-[1200px] mx-auto relative">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute -top-2 right-0"
+            onClick={() => console.log("Close post creation")}
+          >
+            <X className="h-4 w-4" />
+          </Button>
           {isMobile ? (
             <>
               <div className="flex items-center justify-between mb-4">
@@ -132,7 +140,15 @@ const PostActions = () => {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg z-50">
-      <div className="max-w-[1200px] mx-auto">
+      <div className="max-w-[1200px] mx-auto relative">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute -top-2 right-0"
+          onClick={() => console.log("Close post creation")}
+        >
+          <X className="h-4 w-4" />
+        </Button>
         <div className={`flex ${isMobile ? 'flex-row' : 'flex-col sm:flex-row'} items-center justify-end gap-4`}>
           <Button 
             variant="outline" 
