@@ -67,7 +67,9 @@ const PostActions = () => {
                 className="flex items-center gap-2" 
                 onClick={() => setShowScheduler(true)}
               >
-                {format(scheduledTime, isMobile ? "h:mm a" : "EEE, MMMM d 'at' h:mm a")}
+                <span className="whitespace-nowrap">
+                  {format(scheduledTime, isMobile ? "MMM d, h:mm a" : "EEE, MMMM d 'at' h:mm a")}
+                </span>
               </Button>
               <Button 
                 variant="ghost" 
