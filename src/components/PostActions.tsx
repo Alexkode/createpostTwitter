@@ -57,7 +57,7 @@ const PostActions = () => {
     scheduledTime.setHours(hours, parseInt(minute));
 
     return (
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg z-50">
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <Button 
             variant="outline" 
@@ -91,7 +91,7 @@ const PostActions = () => {
   }
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg z-50">
       <div className="max-w-[1200px] mx-auto">
         <div className={`flex ${isMobile ? 'flex-row' : 'flex-col sm:flex-row'} items-center justify-end gap-4`}>
           <Button 
