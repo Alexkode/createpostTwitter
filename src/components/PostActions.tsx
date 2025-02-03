@@ -60,38 +60,71 @@ const PostActions = () => {
     return (
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-lg z-50">
         <div className="max-w-[1200px] mx-auto">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-2">
+          {isMobile ? (
+            <>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant="outline" 
+                    className="flex items-center gap-2" 
+                    onClick={() => setShowScheduler(true)}
+                  >
+                    <span className="whitespace-nowrap">
+                      {format(scheduledTime, isMobile ? "MMM d, h:mm a" : "EEE, MMMM d 'at' h:mm a")}
+                    </span>
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={resetSchedule}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <Button 
+                  variant="outline" 
+                  onClick={() => console.log("Saved as draft")} 
+                  className="flex-1"
+                >
+                  <Save className="h-4 w-4" />
+                </Button>
+                <Button onClick={handleSchedule} className="flex-1">
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center justify-between">
               <Button 
                 variant="outline" 
-                className="flex items-center gap-2" 
-                onClick={() => setShowScheduler(true)}
+                onClick={() => console.log("Saved as draft")} 
+                className="flex items-center gap-2"
               >
-                <span className="whitespace-nowrap">
-                  {format(scheduledTime, isMobile ? "MMM d, h:mm a" : "EEE, MMMM d 'at' h:mm a")}
-                </span>
+                Save as draft
               </Button>
-              <Button 
-                variant="ghost" 
-                size="icon"
-                onClick={resetSchedule}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  className="flex items-center gap-2" 
+                  onClick={() => setShowScheduler(true)}
+                >
+                  {format(scheduledTime, "EEE, MMMM d 'at' h:mm a")}
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={resetSchedule}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+                <Button onClick={handleSchedule}>
+                  Schedule
+                </Button>
+              </div>
             </div>
-          </div>
-          <div className="flex gap-4">
-            <Button 
-              variant="outline" 
-              onClick={() => console.log("Saved as draft")} 
-              className="flex-1"
-            >
-              {isMobile ? <Save className="h-4 w-4" /> : "Save as draft"}
-            </Button>
-            <Button onClick={handleSchedule} className="flex-1">
-              {isMobile ? <Send className="h-4 w-4" /> : "Schedule"}
-            </Button>
-          </div>
+          )}
         </div>
       </div>
     );
