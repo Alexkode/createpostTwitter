@@ -4,7 +4,6 @@ import PostActions from "./PostActions";
 import MediaUpload from "./MediaUpload";
 import PostPreview from "./PostPreview";
 import ThreadManager from "./ThreadManager";
-import ScheduleOptions from "./ScheduleOptions";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -28,23 +27,7 @@ const CreatePost = () => {
   const [media, setMedia] = useState<string[]>([]);
   const [isThreadMode, setIsThreadMode] = useState(false);
   const [threadPosts, setThreadPosts] = useState<ThreadPost[]>([]);
-  const [date, setDate] = useState<Date>();
-  const [time, setTime] = useState("12:00");
-  const [selectedTwitterAccounts, setSelectedTwitterAccounts] = useState<string[]>([]);
   const [expandedPostId, setExpandedPostId] = useState<string | null>("main");
-
-  const handleCancel = () => {
-    setText("");
-    setMedia([]);
-    setDate(undefined);
-    setTime("12:00");
-    setSelectedTwitterAccounts([]);
-  };
-
-  const handleSchedule = () => {
-    console.log("Scheduling post for:", date, time);
-    console.log("Selected Twitter accounts:", selectedTwitterAccounts);
-  };
 
   return (
     <div className={`flex ${isMobile ? 'flex-col' : 'gap-8'}`}>
@@ -111,18 +94,6 @@ const CreatePost = () => {
           )}
           <PostActions />
         </div>
-        
-        <ScheduleOptions
-          twitterAccounts={twitterAccounts}
-          selectedTwitterAccounts={selectedTwitterAccounts}
-          setSelectedTwitterAccounts={setSelectedTwitterAccounts}
-          date={date}
-          setDate={setDate}
-          time={time}
-          setTime={setTime}
-          onCancel={handleCancel}
-          onSchedule={handleSchedule}
-        />
       </div>
 
       <div className={`${isMobile ? 'w-full' : 'w-[350px] self-start'} bg-white rounded-lg shadow-sm border border-gray-200 p-4 ${isMobile ? '' : 'sticky top-4'}`}>
