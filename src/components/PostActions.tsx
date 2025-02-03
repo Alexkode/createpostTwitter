@@ -55,7 +55,7 @@ const PostActions = () => {
     scheduledTime.setHours(hours, parseInt(minute));
 
     return (
-      <div className="flex items-center justify-between mt-4 border-t pt-4">
+      <div className="fixed bottom-0 left-0 right-0 flex items-center justify-between p-4 bg-white border-t">
         <Button variant="outline" onClick={() => console.log("Saved as draft")}>
           Save as draft
         </Button>
@@ -83,10 +83,7 @@ const PostActions = () => {
   }
 
   return (
-    <div className="flex justify-end gap-2 mt-4 border-t pt-4">
-      <Button variant="outline" onClick={() => console.log("Saved as draft")}>
-        Save as draft
-      </Button>
+    <div className="fixed bottom-0 left-0 right-0 flex justify-end gap-2 p-4 bg-white border-t">
       <Button variant="outline" onClick={() => setShowScheduler(true)}>
         Schedule for later
       </Button>
