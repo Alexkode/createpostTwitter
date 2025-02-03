@@ -15,7 +15,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { format } from "date-fns";
-import { Trash2 } from "lucide-react";
+import { Save, Clock, Send, Trash2 } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const PostActions = () => {
   const [showScheduler, setShowScheduler] = useState(false);
@@ -24,6 +25,7 @@ const PostActions = () => {
   const [minute, setMinute] = useState("00");
   const [period, setPeriod] = useState("AM");
   const [isScheduled, setIsScheduled] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleSchedule = () => {
     const scheduledTime = new Date(date!);
@@ -57,8 +59,12 @@ const PostActions = () => {
     return (
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4">
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <Button variant="outline" onClick={() => console.log("Saved as draft")} className="w-full sm:w-auto">
-            Save as draft
+          <Button 
+            variant="outline" 
+            onClick={() => console.log("Saved as draft")} 
+            className="w-full sm:w-auto"
+          >
+            {isMobile ? <Save className="h-4 w-4" /> : "Save as draft"}
           </Button>
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <Button 
@@ -66,7 +72,7 @@ const PostActions = () => {
               className="flex items-center gap-2 w-full sm:w-auto" 
               onClick={() => setShowScheduler(true)}
             >
-              {format(scheduledTime, "EEE, MMMM d 'at' h:mm a")}
+              {format(scheduledTime, isMobile ? "h:mm a" : "EEE, MMMM d 'at' h:mm a")}
             </Button>
             <Button 
               variant="ghost" 
@@ -77,7 +83,7 @@ const PostActions = () => {
             </Button>
           </div>
           <Button onClick={handleSchedule} className="w-full sm:w-auto">
-            Schedule
+            {isMobile ? <Send className="h-4 w-4" /> : "Schedule"}
           </Button>
         </div>
       </div>
@@ -87,14 +93,25 @@ const PostActions = () => {
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t p-4">
       <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-end gap-4">
-        <Button variant="outline" onClick={() => console.log("Saved as draft")} className="w-full sm:w-auto">
-          Save as draft
+        <Button 
+          variant="outline" 
+          onClick={() => console.log("Saved as draft")} 
+          className="w-full sm:w-auto"
+        >
+          {isMobile ? <Save className="h-4 w-4" /> : "Save as draft"}
         </Button>
-        <Button variant="outline" onClick={() => setShowScheduler(true)} className="w-full sm:w-auto">
-          Schedule for later
+        <Button 
+          variant="outline" 
+          onClick={() => setShowScheduler(true)} 
+          className="w-full sm:w-auto"
+        >
+          {isMobile ? <Clock className="h-4 w-4" /> : "Schedule for later"}
         </Button>
-        <Button onClick={() => console.log("Posted now")} className="w-full sm:w-auto">
-          Post now
+        <Button 
+          onClick={() => console.log("Posted now")} 
+          className="w-full sm:w-auto"
+        >
+          {isMobile ? <Send className="h-4 w-4" /> : "Post now"}
         </Button>
 
         <Dialog open={showScheduler} onOpenChange={setShowScheduler}>
